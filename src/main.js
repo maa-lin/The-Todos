@@ -1,3 +1,5 @@
+import { Todolist } from "./models/Todolist";
+
 const heading = document.createElement("h1");
 heading.innerHTML = "My todo lists";
 document.getElementById("app").appendChild(heading);
@@ -15,21 +17,34 @@ const todoListItems = [
   "Yoga",
 ];
 
-const createList = (listHeading, todoListItems) => {
+const todoList = new Todolist(listHeading, todoListItems);
+
+const createEditButtons = (list) => {
+  const btnRemoveList = document.createElement("button");
+  const btnSort = document.createElement("button");
+
+  btnRemoveList.innerHTML = "Ta bort lista";
+  btnSort.innerHTML = "Sortera lista";
+
+  list.appendChild(btnRemoveList);
+  list.appendChild(btnSort);
+};
+
+const createList = () => {
   const list = document.createElement("div");
   document.getElementById("app").appendChild(list);
 
-  list.appendChild(listHeading);
+  list.appendChild(todoList.heading);
 
-  const todoList = document.createElement("ul");
-  todoList.style.textAlign = "left";
-  list.appendChild(todoList);
+  const todoListUl = document.createElement("ul");
+  todoListUl.style.textAlign = "left";
+  list.appendChild(todoListUl);
 
-  for (let i = 0; i < todoListItems.length; i++) {
+  for (let i = 0; i < todoList.list.length; i++) {
     const todoListItem = document.createElement("li");
-    todoListItem.innerHTML = todoListItems[i];
+    todoListItem.innerHTML = todoList.list[i];
     todoListItem.style.cursor = "pointer";
-    todoList.appendChild(todoListItem);
+    todoListUl.appendChild(todoListItem);
 
     let isDone = true;
 
@@ -43,6 +58,8 @@ const createList = (listHeading, todoListItems) => {
       }
     });
   }
+
+  createEditButtons(list);
 };
 
-createList(listHeading, todoListItems);
+createList();
