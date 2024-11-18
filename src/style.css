@@ -95,3 +95,19 @@ button:focus-visible {
     background-color: #f9f9f9;
   }
 }
+
+ul {
+  text-align: left;
+
+  li {
+    cursor: pointer;
+  }
+
+  .li--state-finished {
+    text-decoration: line-through;
+  }
+
+  .li--state-default {
+    text-decoration: none;
+  }
+}
