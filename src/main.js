@@ -1,27 +1,55 @@
 import { Task } from "./models/Task";
 import { Todolist } from "./models/Todolist";
 
-//rubrik
+//rubriker/inledning
 const heading = document.createElement("h1");
 heading.innerHTML = "My todo lists";
 document.getElementById("app").appendChild(heading);
 
-//skapa ny lista knapp
-const btnNewList = document.createElement("button");
-btnNewList.innerHTML = "Skapa ny lista";
-document.getElementById("app").appendChild(btnNewList);
+//Skapa en ny lista
+const newListContainer = document.createElement("section");
+newListContainer.className = "new-list-container";
+document.getElementById("app").appendChild(newListContainer);
+
+const inputNewTodoList = document.createElement("input");
+inputNewTodoList.placeholder = "New todo-list...";
+newListContainer.appendChild(inputNewTodoList);
+
+const btnNewTodoList = document.createElement("button");
+btnNewTodoList.innerHTML = "Create";
+btnNewTodoList.disabled = true;
+newListContainer.appendChild(btnNewTodoList);
+
+inputNewTodoList.addEventListener("input", () => {
+  btnNewTodoList.disabled = false;
+});
+
+btnNewTodoList.addEventListener("click", () => {
+  const listTitle = inputNewTodoList.value;
+  const newTasks = [];
+  const newList = new Todolist(listTitle, newTasks);
+
+  createList(newList);
+
+  inputNewTodoList.value = "";
+  btnNewTodoList.disabled = true;
+});
+
+//Container för todo-listor
+const container = document.createElement("section");
+container.className = "container";
+document.getElementById("app").appendChild(container);
 
 //hårdkodad lista
-const listHeading = document.createElement("h2");
-listHeading.innerHTML = "Att göra idag";
+const listHeading = "Julmat att laga";
 
-const todoListItem1 = new Task("Bädda sängen", false);
-const todoListItem2 = new Task("Äta frukost", false);
-const todoListItem3 = new Task("Borsta tänderna", false);
-const todoListItem4 = new Task("Skriva en inköpslista", false);
-const todoListItem5 = new Task("Gå och handla", false);
-const todoListItem6 = new Task("Hämta paket", false);
-const todoListItem7 = new Task("Yoga", false);
+const todoListItem1 = new Task("Julskinka", false);
+const todoListItem2 = new Task("Grynkaka", false);
+const todoListItem3 = new Task("Nubbesallad", false);
+const todoListItem4 = new Task("Gravad lax", false);
+const todoListItem5 = new Task("Rörost", false);
+const todoListItem6 = new Task("Köttbullar", false);
+const todoListItem7 = new Task("Tjälknöl", false);
 
 const todoListItems = [
   todoListItem1,
@@ -36,23 +64,27 @@ const todoListItems = [
 const todoList = new Todolist(listHeading, todoListItems);
 
 //skapar ta-bort-lista knappen och sortera knappen
-const createEditButtons = (listContainer, todoList) => {
+const createEditButtons = (listContainer, container, todoList) => {
+  const btnContainer = document.createElement("div");
+  btnContainer.className = "btn-container";
+  listContainer.appendChild(btnContainer);
+
   const btnRemoveList = document.createElement("button");
   const btnSort = document.createElement("button");
 
   btnRemoveList.innerHTML = "Ta bort lista";
   btnSort.innerHTML = "Sortera lista";
 
-  listContainer.appendChild(btnRemoveList);
-  listContainer.appendChild(btnSort);
+  btnContainer.appendChild(btnRemoveList);
+  btnContainer.appendChild(btnSort);
 
-  remove(btnRemoveList, listContainer);
+  remove(btnRemoveList, container, listContainer);
   sort(btnSort, todoList, listContainer);
 };
 
 //sortera listan så att färdiga punkter hamnar längst ner i listan
-const sort = (btnSort, todoList, listContainer) => {
-  btnSort.addEventListener("click", () => {
+const sort = (btn, todoList, listContainer) => {
+  btn.addEventListener("click", () => {
     let finishedItems = [];
 
     for (let i = 0; i < todoList.list.length; i++) {
@@ -73,53 +105,88 @@ const sort = (btnSort, todoList, listContainer) => {
 };
 
 //ta bort hela listan
-const remove = (btnRemoveList, listContainer) => {
+const remove = (btnRemoveList, container, listContainer) => {
   btnRemoveList.addEventListener("click", () => {
-    document.getElementById("app").removeChild(listContainer);
+    container.removeChild(listContainer);
+  });
+};
+
+//lägg till en ny todo
+const addNewTodo = (listContainer, todoList) => {
+  const newTodoContainer = document.createElement("div");
+  newTodoContainer.className = "new-todo-container";
+  listContainer.appendChild(newTodoContainer);
+
+  const inputNewTodo = document.createElement("input");
+  inputNewTodo.placeholder = "New todo...";
+  newTodoContainer.appendChild(inputNewTodo);
+
+  const btnAddTodo = document.createElement("button");
+  btnAddTodo.innerHTML = "Add";
+  newTodoContainer.appendChild(btnAddTodo);
+
+  btnAddTodo.addEventListener("click", () => {
+    const newTask = new Task(inputNewTodo.value, false);
+    todoList.list.push(newTask);
+
+    listContainer.remove();
+    createList(todoList);
   });
 };
 
 //skapar en lista
 const createList = (todoList) => {
   const listContainer = document.createElement("div");
-  document.getElementById("app").appendChild(listContainer);
+  listContainer.className = "list-container";
+  container.appendChild(listContainer);
 
-  listContainer.appendChild(todoList.heading);
+  const listTitle = document.createElement("h2");
+  listTitle.innerHTML = todoList.heading;
 
-  const todoListUl = document.createElement("ul");
-  listContainer.appendChild(todoListUl);
+  listContainer.appendChild(listTitle);
+
+  //anropar funktionen som lägger till ny todo
+  addNewTodo(listContainer, todoList);
+
+  const todoListOl = document.createElement("ol");
+  listContainer.appendChild(todoListOl);
 
   for (let i = 0; i < todoList.list.length; i++) {
     const todoListItem = document.createElement("li");
-    todoListItem.innerHTML = todoListItems[i].task;
-    todoListUl.appendChild(todoListItem);
+    const todoListItemText = document.createElement("span");
+    todoListItemText.innerHTML = todoList.list[i].task;
+    todoListItem.appendChild(todoListItemText);
 
+    todoListOl.appendChild(todoListItem);
+
+    //skapar en tabortknapp vid varje punkt i listan
     const btnRemoveListItem = document.createElement("button");
-    btnRemoveListItem.innerHTML = "&#10062;";
+    btnRemoveListItem.innerHTML = "&#x274C;";
     todoListItem.appendChild(btnRemoveListItem);
 
     btnRemoveListItem.addEventListener("click", () => {
-      todoListUl.removeChild(todoListItem);
+      todoList.list.splice(i, 1);
+      todoListOl.removeChild(todoListItem);
     });
 
-    //Om listan har uppdtaerats, gör .isDone === true överstrukna även i den nya listan
+    //Om listan har uppdaterats, gör .isDone === true överstrukna även i den nya listan
     if (todoList.list[i].isDone === true) {
-      todoListItem.className = "li--state-finished";
+      todoListItemText.className = "li--state-finished";
       todoList.list[i].isDone = true;
     }
 
-    todoListItem.addEventListener("click", () => {
+    todoListItemText.addEventListener("click", () => {
       if (todoList.list[i].isDone === false) {
-        todoListItem.className = "li--state-finished";
+        todoListItemText.className = "li--state-finished";
         todoList.list[i].isDone = true;
       } else {
         todoList.list[i].isDone = false;
-        todoListItem.className = "li--state-default";
+        todoListItemText.className = "li--state-default";
       }
     });
   }
 
-  createEditButtons(listContainer, todoList);
+  createEditButtons(listContainer, container, todoList);
 };
 
 createList(todoList);

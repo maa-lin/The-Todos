@@ -14,15 +14,6 @@
   -webkit-text-size-adjust: 100%;
 }
 
-a {
-  font-weight: 500;
-  color: #646cff;
-  text-decoration: inherit;
-}
-a:hover {
-  color: #535bf2;
-}
-
 body {
   margin: 0;
   display: flex;
@@ -32,8 +23,14 @@ body {
 }
 
 h1 {
+  font-family: "Delius", cursive;
   font-size: 3.2em;
   line-height: 1.1;
+}
+
+h2 {
+  font-family: "Delius", cursive;
+  margin: 10px;
 }
 
 #app {
@@ -43,31 +40,10 @@ h1 {
   text-align: center;
 }
 
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.vanilla:hover {
-  filter: drop-shadow(0 0 2em #f7df1eaa);
-}
-
-.card {
-  padding: 2em;
-}
-
-.read-the-docs {
-  color: #888;
-}
-
 button {
   border-radius: 8px;
   border: 1px solid transparent;
-  padding: 0.6em 1.2em;
+  padding: 0.3em 1.2em;
   font-size: 1em;
   font-weight: 500;
   font-family: inherit;
@@ -76,11 +52,7 @@ button {
   transition: border-color 0.25s;
 }
 button:hover {
-  border-color: #646cff;
-}
-button:focus,
-button:focus-visible {
-  outline: 4px auto -webkit-focus-ring-color;
+  border-color: #4f4f4f;
 }
 
 @media (prefers-color-scheme: light) {
@@ -96,18 +68,91 @@ button:focus-visible {
   }
 }
 
-ul {
-  text-align: left;
+.new-list-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+}
 
-  li {
+.container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  padding: 20px;
+}
+
+.list-container {
+  display: flex;
+  flex-direction: column;
+  padding: 10px;
+  background-color: rgb(254, 254, 209);
+  box-shadow: 5px 5px 3px lightgray;
+
+  input {
+    border: 1px solid yellow;
+    border-radius: 5px;
+    padding: 5px;
+  }
+
+  button {
+    border: 1px solid yellow;
+    background-color: rgb(255, 255, 224);
+    box-shadow: 2px 2px 2px lightgray;
+
+    &:hover {
+      background-color: white;
+    }
+  }
+}
+
+.new-todo-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.btn-container {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  align-items: center;
+}
+
+input {
+  border: 1px solid grey;
+  border-radius: 5px;
+  padding: 5px;
+}
+
+ol {
+  font-family: "Delius", cursive;
+  text-align: left;
+  padding: 0;
+  list-style-type: none;
+}
+
+li {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 5px 0;
+  border-bottom: 1px solid rgb(201, 196, 127);
+
+  &:first-child {
+    border-top: 1px solid rgb(201, 196, 127);
+  }
+
+  span {
     cursor: pointer;
   }
+}
 
-  .li--state-finished {
-    text-decoration: line-through;
-  }
+.li--state-finished {
+  text-decoration: line-through;
+  text-decoration-color: red;
+}
 
-  .li--state-default {
-    text-decoration: none;
-  }
+.li--state-default {
+  text-decoration: none;
 }
