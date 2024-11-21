@@ -1,12 +1,12 @@
 import { Task } from "./models/Task";
 import { Todolist } from "./models/Todolist";
 
-//rubriker/inledning
+//rubrik
 const heading = document.createElement("h1");
 heading.innerHTML = "My todo lists";
 document.getElementById("app").appendChild(heading);
 
-//Skapa en ny lista
+//Skapa en helt ny lista
 const newListContainer = document.createElement("section");
 newListContainer.className = "new-list-container";
 document.getElementById("app").appendChild(newListContainer);
@@ -33,9 +33,10 @@ btnNewTodoList.addEventListener("click", () => {
 
   inputNewTodoList.value = "";
   btnNewTodoList.disabled = true;
+  saveTodoList(newList);
 });
 
-//Container för todo-listor
+//Container för alla listor
 const container = document.createElement("section");
 container.className = "container";
 document.getElementById("app").appendChild(container);
@@ -63,7 +64,40 @@ const todoListItems = [
 
 const todoList = new Todolist(listHeading, todoListItems);
 
-//skapar ta-bort-lista knappen och sortera knappen
+//Visa senaste listorna
+window.onload = () => {
+  const todoLists = JSON.parse(localStorage.getItem("todoLists"));
+
+  for (let i = 0; i < todoLists.length; i++) {
+    createList(todoLists[i]);
+  }
+};
+
+//Spara till localStorage
+const saveTodoList = (todoList) => {
+  let todoLists = JSON.parse(localStorage.getItem("todoLists")) || [];
+
+  if (todoLists.length === 0) {
+    todoLists.push(todoList);
+  }
+
+  let foundList = false;
+
+  for (let i = 0; i < todoLists.length; i++) {
+    if (todoLists[i].heading === todoList.heading) {
+      todoLists[i] = todoList;
+      foundList = true;
+    }
+  }
+
+  if (foundList === false) {
+    todoLists.push(todoList);
+  }
+
+  localStorage.setItem("todoLists", JSON.stringify(todoLists));
+};
+
+//skapar knappen som tar bort enskilda punkter och sortera knappen
 const createEditButtons = (listContainer, container, todoList) => {
   const btnContainer = document.createElement("div");
   btnContainer.className = "btn-container";
@@ -72,8 +106,8 @@ const createEditButtons = (listContainer, container, todoList) => {
   const btnRemoveList = document.createElement("button");
   const btnSort = document.createElement("button");
 
-  btnRemoveList.innerHTML = "Remove list";
-  btnSort.innerHTML = "Sort list";
+  btnRemoveList.innerHTML = "Remove";
+  btnSort.innerHTML = "Sort";
 
   btnContainer.appendChild(btnRemoveList);
   btnContainer.appendChild(btnSort);
@@ -101,6 +135,7 @@ const sort = (btn, todoList, listContainer) => {
 
     listContainer.remove();
     createList(todoList);
+    saveTodoList(todoList);
   });
 };
 
@@ -131,10 +166,11 @@ const addNewTodo = (listContainer, todoList) => {
 
     listContainer.remove();
     createList(todoList);
+    saveTodoList(todoList);
   });
 };
 
-//skapar en lista
+//skapar en lista och lägger den i en egen container
 const createList = (todoList) => {
   const listContainer = document.createElement("div");
   listContainer.className = "list-container";
@@ -166,9 +202,10 @@ const createList = (todoList) => {
 
     btnRemoveListItem.addEventListener("click", () => {
       todoList.list.splice(i, 1);
-      //todoListOl.removeChild(todoListItem);
+
       listContainer.remove();
       createList(todoList);
+      saveTodoList(todoList);
     });
 
     //Om listan har uppdaterats, gör .isDone === true överstrukna även i den nya listan
@@ -184,10 +221,9 @@ const createList = (todoList) => {
       }
       listContainer.remove();
       createList(todoList);
+      saveTodoList(todoList);
     });
   }
 
   createEditButtons(listContainer, container, todoList);
 };
-
-createList(todoList);
