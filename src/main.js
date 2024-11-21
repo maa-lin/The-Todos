@@ -72,8 +72,8 @@ const createEditButtons = (listContainer, container, todoList) => {
   const btnRemoveList = document.createElement("button");
   const btnSort = document.createElement("button");
 
-  btnRemoveList.innerHTML = "Ta bort lista";
-  btnSort.innerHTML = "Sortera lista";
+  btnRemoveList.innerHTML = "Remove list";
+  btnSort.innerHTML = "Sort list";
 
   btnContainer.appendChild(btnRemoveList);
   btnContainer.appendChild(btnSort);
@@ -127,7 +127,7 @@ const addNewTodo = (listContainer, todoList) => {
 
   btnAddTodo.addEventListener("click", () => {
     const newTask = new Task(inputNewTodo.value, false);
-    todoList.list.push(newTask);
+    todoList.list.unshift(newTask);
 
     listContainer.remove();
     createList(todoList);
@@ -166,23 +166,24 @@ const createList = (todoList) => {
 
     btnRemoveListItem.addEventListener("click", () => {
       todoList.list.splice(i, 1);
-      todoListOl.removeChild(todoListItem);
+      //todoListOl.removeChild(todoListItem);
+      listContainer.remove();
+      createList(todoList);
     });
 
     //Om listan har uppdaterats, gör .isDone === true överstrukna även i den nya listan
     if (todoList.list[i].isDone === true) {
       todoListItemText.className = "li--state-finished";
-      todoList.list[i].isDone = true;
     }
 
     todoListItemText.addEventListener("click", () => {
       if (todoList.list[i].isDone === false) {
-        todoListItemText.className = "li--state-finished";
         todoList.list[i].isDone = true;
       } else {
         todoList.list[i].isDone = false;
-        todoListItemText.className = "li--state-default";
       }
+      listContainer.remove();
+      createList(todoList);
     });
   }
 
